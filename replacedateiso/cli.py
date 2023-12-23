@@ -7,7 +7,8 @@ Be creative! do whatever you want!
 - Start a web application
 - Import things from your .base module
 """
-
+from pathlib import Path
+import re, os
 
 def main():  # pragma: no cover
     """
@@ -15,14 +16,15 @@ def main():  # pragma: no cover
     `python -m replacedateiso` and `$ replacedateiso `.
 
     This is your program's entry point.
-
-    You can change this function to do whatever you want.
-    Examples:
-        * Run a test suite
-        * Run a server
-        * Do some other stuff
-        * Run a command line application (Click, Typer, ArgParse)
-        * List all available tasks
-        * Run an application (Flask, FastAPI, Django, etc.)
     """
-    print("This will do something")
+
+    for file in Path.cwd().iterdir():
+    match = re.search('\d{2}.\d{2}.\d{4}', file.name)
+    if match != None:
+        dateparam = match.group().split(".")
+        day = dateparam[0]
+        month = dateparam[1]
+        year = dateparam[2]
+        newname = file.name.replace(match.group(), year + "-" + month + "-" + day)
+        print("Found Date:" + file.name + " [ " + match.group() + " ] -> " + newname)
+        os.rename(file, file.parent / newname)
